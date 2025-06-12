@@ -18,10 +18,7 @@ func main() {
 	flag.StringVar(&message, "m", "hello world", "send message")
 	flag.Parse()
 
-	msgData := &smux.Message{
-		Id:   id,
-		Body: []byte(message),
-	}
+	msgData := &smux.Message{"id": id, "message": message}
 	err := client.SendMessage(msgData)
 	if err != nil {
 		fmt.Printf("Send message error: %v\n", err)
@@ -33,6 +30,6 @@ func main() {
 		fmt.Printf("Recv message error: %v\n", err)
 		return
 	}
-	fmt.Println("Recv message", resp.Id, string(resp.Body))
+	fmt.Println("Recv message", resp)
 
 }

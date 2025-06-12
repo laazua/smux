@@ -37,7 +37,7 @@ func (e *EchoServer) Handle(conn *smux.Conn) error {
 		}
 		return err
 	}
-	fmt.Println("recve messge", msg.Id, string(msg.Body))
+	fmt.Println("recve messge", msg)
 
 	return conn.SendMessage(msg)
 }

@@ -9,7 +9,9 @@ const (
 	MsgWriteTimeout = 60 * time.Second
 )
 
-type Message struct {
-	Id   uint64
-	Body []byte
-}
+// type Message struct {
+// 	Id   uint64
+// 	Body string
+// }
+
+type Message map[string]any
