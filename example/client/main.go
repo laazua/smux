@@ -17,7 +17,7 @@ func main() {
 	flag.Uint64Var(&id, "i", 0, "message id")
 	flag.StringVar(&message, "m", "hello world", "send message")
 	flag.Parse()
-
+        // 自定义数据传递结构(json)
 	msgData := &smux.Message{"id": id, "message": message}
 	err := client.SendMessage(msgData)
 	if err != nil {
