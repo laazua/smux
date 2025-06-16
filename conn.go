@@ -24,7 +24,7 @@ func NewConn(conn net.Conn, coder coder) *Conn {
 	}
 }
 
-func (c *Conn) RecvMessage() (*Message, error) {
+func (c *Conn) RecvMessage() (Message, error) {
 	// 设置超时时间
 	c.conn.SetReadDeadline(time.Now().Add(MsgReadTimeout))
 	// 读取消息体长度

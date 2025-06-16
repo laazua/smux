@@ -16,7 +16,7 @@ func NewClient(address string, coder coder) *Client {
 	}
 }
 
-func (c *Client) RecvMessage() (*Message, error) {
+func (c *Client) RecvMessage() (Message, error) {
 	return c.conn.RecvMessage()
 }
 

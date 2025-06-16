@@ -24,7 +24,7 @@ func main() {
 	server.Stop()
 }
 
-// 实现smux.Handler接口
+// 实现smux.Handler接口, 处理客户端消息
 type EchoServer struct{}
 
 func (e *EchoServer) Handle(conn *smux.Conn) error {
@@ -37,7 +37,10 @@ func (e *EchoServer) Handle(conn *smux.Conn) error {
 		}
 		return err
 	}
-	fmt.Println("recve messge", msg)
-
-	return conn.SendMessage(msg)
+	// 自定义回显数据
+	msgData := &smux.Message{"id": msg["id"], "status": "OK"}
+	return conn.SendMessage(msgData)
+	// fmt.Println("recve messge", msg)
+	// 这里直接回显了客户端消息
+	// return conn.SendMessage(msg)
 }
