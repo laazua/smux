@@ -12,7 +12,7 @@ rm -f *.crt *.key *.csr *.srl openssl.cnf
 
 echo "[*] 生成 CA 私钥和证书"
 openssl genrsa -out ca.key 4096
-openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=CN/ST=BJ/L=BJ/O=Dev/CN=MyCA"
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=CN/ST=SC/L=CD/O=laazua/CN=CA"
 
 echo "[*] 创建 OpenSSL 配置文件带 SAN 支持"
 cat > openssl.cnf <<EOF
@@ -25,10 +25,10 @@ distinguished_name = dn
 
 [ dn ]
 C  = CN
-ST = Beijing
-L  = Beijing
-O  = Dev
-OU = Dev
+ST = Sichuan
+L  = Chengdu
+O  = laazua
+OU = laazua
 
 [ req_ext ]
 subjectAltName = @alt_names

@@ -3,11 +3,11 @@ package smux
 import (
 	"crypto/tls"
 	"errors"
-	"fmt"
-	"log"
+	"log/slog"
 	"net"
-	"smux/auth"
 	"sync"
+
+	"smux/auth"
 )
 
 type Server struct {
@@ -35,17 +35,17 @@ func (s *Server) SetHandler(handler Handler) {
 func (s *Server) Start() error {
 	var err error
 	if auth.ServerAuthConfig != nil {
-		fmt.Println("已启用TLS/SSL双向认证")
+		slog.Info("已启用TLS/SSL双向认证")
 		s.listener, err = tls.Listen("tcp", s.address, auth.ServerAuthConfig)
 	} else {
-		fmt.Println("未启用TLS/SSL双向认证")
+		slog.Info("未启用TLS/SSL双向认证")
 		s.listener, err = net.Listen("tcp", s.address)
 	}
 	if err != nil {
-		return fmt.Errorf("listen error: %v", err)
+		return err
 	}
 
-	fmt.Printf("server started on %s\n", s.address)
+	slog.Info("Server started", slog.String("listen", s.address))
 
 	s.wg.Add(1)
 	go s.acceptConn()
@@ -58,7 +58,7 @@ func (s *Server) Stop() {
 	close(s.quit)
 	s.listener.Close()
 	s.wg.Wait()
-	fmt.Println("TCP server stopped")
+	slog.Info("TCP server stopped")
 }
 
 // acceptConnections 接受连接
@@ -73,7 +73,7 @@ func (s *Server) acceptConn() {
 			conn, err := s.listener.Accept()
 			if err != nil {
 				if !errors.Is(err, net.ErrClosed) {
-					fmt.Printf("accept error: %v\n", err)
+					slog.Error("Accept failure", slog.String("error", err.Error()))
 				}
 				continue
 			}
@@ -82,13 +82,12 @@ func (s *Server) acceptConn() {
 			if ok {
 				err := tlsConn.Handshake()
 				if err != nil {
-					log.Println("server: handshake failed:", err)
+					slog.Error("Server handshake failure", slog.String("error", err.Error()))
 					return
 				}
-
 				state := tlsConn.ConnectionState()
 				for _, v := range state.PeerCertificates {
-					log.Printf("Client Cert Subject: %s\n", v.Subject)
+					slog.Info("Client cert info", slog.Any("subject", v.Subject))
 				}
 			}
 
@@ -110,7 +109,7 @@ func (s *Server) handleConn(conn *Conn) {
 		s.wg.Done()
 	}()
 
-	fmt.Printf("Client connected: %s\n", remoteAddress)
+	slog.Info("Client connected", slog.Any("remoteAddr", remoteAddress))
 
 	for {
 		select {

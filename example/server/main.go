@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log/slog"
 
 	"smux"
 	"smux/auth"
@@ -27,12 +28,12 @@ func main() {
 
 	// 启动服务器
 	if err := server.Start(); err != nil {
-		fmt.Printf("Failed to start server: %v\n", err)
+		slog.Error("Failed to start server", slog.String("error", err.Error()))
 		return
 	}
 
 	// 等待退出信号
-	fmt.Println("Press Enter to stop the server...")
+	slog.Info("Press Enter to stop the server...")
 	fmt.Scanln()
 
 	// 停止服务器
@@ -46,13 +47,13 @@ func (e *EchoServer) Handle(conn *smux.Conn) error {
 	msg, err := conn.RecvMessage()
 	if err != nil {
 		if err == io.EOF {
-			fmt.Printf("Client disconnected: %s\n", conn.GetRemoteAddr())
+			slog.Info("Client disconnected", slog.Any("remote", conn.GetRemoteAddr()))
 		} else {
-			fmt.Printf("Read error from %s: %v\n", conn.GetRemoteAddr(), err)
+			slog.Error("Read client failure", slog.Any("remoteAddr", conn.GetRemoteAddr()), slog.String("error", err.Error()))
 		}
 		return err
 	}
-	fmt.Println("recve messge", msg)
+	slog.Info("Recv client data", slog.Any("content", msg))
 	// 这里直接回显了客户端消息
 	return conn.SendMessage(&msg)
 }
@@ -62,12 +63,13 @@ func MHandler(conn *smux.Conn) error {
 	msg, err := conn.RecvMessage()
 	if err != nil {
 		if err == io.EOF {
-			fmt.Printf("Client disconnected: %s\n", conn.GetRemoteAddr())
+			slog.Info("Client disconnected", slog.Any("remote", conn.GetRemoteAddr()))
 		} else {
-			fmt.Printf("Read error from %s: %v\n", conn.GetRemoteAddr(), err)
+			slog.Error("Read client failure", slog.Any("remoteAddr", conn.GetRemoteAddr()), slog.String("error", err.Error()))
 		}
 		return err
 	}
+	slog.Info("Recv client data", slog.Any("content", msg))
 	// 自定义回显数据
 	msgData := &smux.Message{"id": msg["id"], "status": "OK"}
 	return conn.SendMessage(msgData)

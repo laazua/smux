@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"smux/auth"
+	"log/slog"
 
 	"smux"
+	"smux/auth"
 )
 
 var (
@@ -22,7 +22,7 @@ func main() {
 
 	client := smux.NewClient("localhost:8886", &smux.JsonCode{})
 	if client == nil {
-		fmt.Println("创建socket客户端连接失败")
+		slog.Error("创建socket客户端连接失败")
 		return
 	}
 	flag.Uint64Var(&id, "i", 0, "message id")
@@ -32,15 +32,14 @@ func main() {
 	msgData := &smux.Message{"id": id, "message": message}
 	err := client.SendMessage(msgData)
 	if err != nil {
-		fmt.Printf("Send message error: %v\n", err)
+		slog.Error("Send message failure", slog.String("error", err.Error()))
 		return
 	}
 
 	resp, err := client.RecvMessage()
 	if err != nil {
-		fmt.Printf("Recv message error: %v\n", err)
+		slog.Error("Recv message failure", slog.String("error", err.Error()))
 		return
 	}
-	fmt.Println("Recv message", resp)
-
+	slog.Info("Recv message", slog.Any("content", resp))
 }
