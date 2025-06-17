@@ -1,13 +1,14 @@
 package smux
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
+	"log"
 	"net"
+	"smux/auth"
 	"sync"
 )
-
-
 
 type Server struct {
 	address     string
@@ -33,7 +34,13 @@ func (s *Server) SetHandler(handler Handler) {
 
 func (s *Server) Start() error {
 	var err error
-	s.listener, err = net.Listen("tcp", s.address)
+	if auth.ServerAuthConfig != nil {
+		fmt.Println("已启用TLS/SSL双向认证")
+		s.listener, err = tls.Listen("tcp", s.address, auth.ServerAuthConfig)
+	} else {
+		fmt.Println("未启用TLS/SSL双向认证")
+		s.listener, err = net.Listen("tcp", s.address)
+	}
 	if err != nil {
 		return fmt.Errorf("listen error: %v", err)
 	}
@@ -69,6 +76,20 @@ func (s *Server) acceptConn() {
 					fmt.Printf("accept error: %v\n", err)
 				}
 				continue
+			}
+
+			tlsConn, ok := conn.(*tls.Conn)
+			if ok {
+				err := tlsConn.Handshake()
+				if err != nil {
+					log.Println("server: handshake failed:", err)
+					return
+				}
+
+				state := tlsConn.ConnectionState()
+				for _, v := range state.PeerCertificates {
+					log.Printf("Client Cert Subject: %s\n", v.Subject)
+				}
 			}
 
 			connection := NewConn(conn, s.coder)

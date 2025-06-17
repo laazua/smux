@@ -5,9 +5,16 @@ import (
 	"io"
 
 	"smux"
+	"smux/auth"
 )
 
 func main() {
+	// 添加证书
+	auth.CaCertFile = "../certs/ssl/ca.crt"
+	auth.ServerCrtFile = "../certs/ssl/server.crt"
+	auth.ServerKeyFile = "../certs/ssl/server.key"
+	auth.AddServerAuthConfig()
+
 	server := smux.NewServer(":8886", &smux.JsonCode{})
 
 	// handler适配器处理客户端消息
