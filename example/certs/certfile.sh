@@ -12,7 +12,7 @@ rm -f *.crt *.key *.csr *.srl openssl.cnf
 
 echo "[*] 生成 CA 私钥和证书"
 openssl genrsa -out ca.key 4096
-openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=CN/ST=SC/L=CD/O=laazua/CN=CA"
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=CN/ST=SC/L=CD/O=laazua/CN=lazuaCA"
 
 echo "[*] 创建 OpenSSL 配置文件带 SAN 支持"
 cat > openssl.cnf <<EOF
