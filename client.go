@@ -23,6 +23,7 @@ func NewClient(address string, coder coder) *Client {
 		conn, err = net.Dial("tcp", address)
 	}
 	if err != nil {
+		slog.Error("Create client socket failure", slog.String("error", err.Error()))
 		return nil
 	}
 

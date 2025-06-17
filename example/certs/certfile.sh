@@ -15,6 +15,8 @@ openssl genrsa -out ca.key 4096
 openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt -subj "/C=CN/ST=SC/L=CD/O=laazua/CN=lazuaCA"
 
 echo "[*] 创建 OpenSSL 配置文件带 SAN 支持"
+## openssl.cnf中
+## [ alt_names ]块设置服务端地址
 cat > openssl.cnf <<EOF
 [ req ]
 default_bits       = 2048
@@ -36,6 +38,7 @@ subjectAltName = @alt_names
 [ alt_names ]
 DNS.1 = localhost
 IP.1  = 127.0.0.1
+IP.2  = 192.168.165.89
 EOF
 
 ### ==== 服务端证书 ====

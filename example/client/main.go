@@ -11,6 +11,7 @@ import (
 var (
 	id      uint64
 	message string
+	address string
 )
 
 func main() {
@@ -20,14 +21,16 @@ func main() {
 	auth.ClientKeyFile = "../certs/ssl/client.key"
 	auth.AddClientAuthConfig()
 
-	client := smux.NewClient("localhost:8886", &smux.JsonCode{})
+	flag.Uint64Var(&id, "i", 0, "message id")
+	flag.StringVar(&message, "m", "hello world", "send message")
+	flag.StringVar(&address, "a", "localhost:8886", "server address")
+	flag.Parse()
+
+	client := smux.NewClient(address, &smux.JsonCode{})
 	if client == nil {
 		slog.Error("创建socket客户端连接失败")
 		return
 	}
-	flag.Uint64Var(&id, "i", 0, "message id")
-	flag.StringVar(&message, "m", "hello world", "send message")
-	flag.Parse()
 	// 自定义数据传递结构(json)
 	msgData := &smux.Message{"id": id, "message": message}
 	err := client.SendMessage(msgData)

@@ -78,18 +78,18 @@ func (s *Server) acceptConn() {
 				continue
 			}
 
-			tlsConn, ok := conn.(*tls.Conn)
-			if ok {
-				err := tlsConn.Handshake()
-				if err != nil {
-					slog.Error("Server handshake failure", slog.String("error", err.Error()))
-					return
-				}
-				state := tlsConn.ConnectionState()
-				for _, v := range state.PeerCertificates {
-					slog.Info("Client cert info", slog.Any("subject", v.Subject))
-				}
-			}
+			// tlsConn, ok := conn.(*tls.Conn)
+			// if ok {
+			// 	err := tlsConn.Handshake()
+			// 	if err != nil {
+			// 		slog.Error("Server handshake failure", slog.String("error", err.Error()))
+			// 		return
+			// 	}
+			// 	state := tlsConn.ConnectionState()
+			// 	for _, v := range state.PeerCertificates {
+			// 		slog.Info("Client cert info", slog.Any("subject", v.Subject))
+			// 	}
+			// }
 
 			connection := NewConn(conn, s.coder)
 			s.connections.Store(conn.RemoteAddr().String(), connection)
