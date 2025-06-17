@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"smux/auth"
 
 	"smux"
-	"smux/auth"
 )
 
 var (
@@ -21,6 +21,10 @@ func main() {
 	auth.AddClientAuthConfig()
 
 	client := smux.NewClient("localhost:8886", &smux.JsonCode{})
+	if client == nil {
+		fmt.Println("创建socket客户端连接失败")
+		return
+	}
 	flag.Uint64Var(&id, "i", 0, "message id")
 	flag.StringVar(&message, "m", "hello world", "send message")
 	flag.Parse()
