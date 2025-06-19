@@ -16,9 +16,6 @@ type Conn struct {
 	reader    bufio.Reader
 }
 
-type Mcon interface {
-}
-
 func NewConn(conn net.Conn, coder coder) *Conn {
 	return &Conn{
 		conn:   conn,

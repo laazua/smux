@@ -37,3 +37,7 @@ func (c *Client) RecvMessage() (Message, error) {
 func (c *Client) SendMessage(msg *Message) error {
 	return c.conn.SendMessage(msg)
 }
+
+func (c *Client) Clean() {
+	c.conn.conn.Close()
+}
