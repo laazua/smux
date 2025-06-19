@@ -31,6 +31,8 @@ func main() {
 		slog.Error("创建socket客户端连接失败")
 		return
 	}
+	defer client.Clean()
+
 	// 自定义数据传递结构(json)
 	msgData := &smux.Message{"id": id, "message": message}
 	err := client.SendMessage(msgData)
