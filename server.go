@@ -35,10 +35,8 @@ func (s *Server) SetHandler(handler Handler) {
 func (s *Server) Start() error {
 	var err error
 	if auth.ServerAuthConfig != nil {
-		slog.Info("已启用TLS/SSL双向认证")
 		s.listener, err = tls.Listen("tcp", s.address, auth.ServerAuthConfig)
 	} else {
-		slog.Info("未启用TLS/SSL双向认证")
 		s.listener, err = net.Listen("tcp", s.address)
 	}
 	if err != nil {

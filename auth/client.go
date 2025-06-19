@@ -28,8 +28,10 @@ func AddClientAuthConfig() {
 	cAuth := &cAuth{}
 
 	if !fileExists(ClientCrtFile) || !fileExists(ClientKeyFile) || !fileExists(CaCertFile) {
+		slog.Info("未启用TLS/SSL双向认证")
 		slog.Info("指定的证书文件不存在,请核对证书文件", slog.String("crtFile", ClientCrtFile), slog.String("keyFile", ClientKeyFile), slog.String("caFile", CaCertFile))
 		return
 	}
+	slog.Info("已启用TLS/SSL双向认证")
 	cAuth.LoadAuthConfig(clientCaFile)
 }

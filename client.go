@@ -16,10 +16,8 @@ func NewClient(address string, coder coder) *Client {
 	var conn net.Conn
 	var err error
 	if auth.ClientAuthConfig != nil {
-		slog.Info("已启用TLS/SSL双向认证")
 		conn, err = tls.Dial("tcp", address, auth.ClientAuthConfig)
 	} else {
-		slog.Info("未启用TLS/SSL双向认证")
 		conn, err = net.Dial("tcp", address)
 	}
 	if err != nil {
