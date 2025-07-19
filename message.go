@@ -3,7 +3,8 @@ package smux
 import "time"
 
 const (
-	MsgHeadLen = 4
+	MsgHeadLen  = 4
+	MaxBodySize = 10 * 1024 * 1024
 
 	MsgReadTimeout  = 60 * time.Second
 	MsgWriteTimeout = 60 * time.Second
